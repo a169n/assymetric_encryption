@@ -3,107 +3,7 @@ import chalk from "chalk";
 import crypto from "crypto";
 import fs from "fs/promises";
 
-class Block {
-  constructor(index, transactions, previousHash = "") {
-    this.index = index;
-    this.timestamp = new Date().toISOString();
-    this.transactions = transactions;
-    this.previousHash = previousHash;
-    this.hash = this.calculateHash();
-  }
-
-  calculateHash() {
-    const data =
-      this.index +
-      this.timestamp +
-      JSON.stringify(this.transactions) +
-      this.previousHash;
-    return crypto.createHash("sha256").update(data).digest("hex");
-  }
-}
-
-class Blockchain {
-  constructor() {
-    this.chain = [this.createGenesisBlock()];
-    this.pendingTransactions = [];
-    this.difficulty = 2;
-  }
-
-  createGenesisBlock() {
-    return new Block(0, [], "0");
-  }
-
-  getLatestBlock() {
-    return this.chain[this.chain.length - 1];
-  }
-
-  minePendingTransactions(miningRewardAddress) {
-    const rewardTransaction = new Transaction(null, miningRewardAddress, 100);
-    this.pendingTransactions.push(rewardTransaction);
-
-    const block = new Block(
-      this.getLatestBlock().index + 1,
-      this.pendingTransactions,
-      this.getLatestBlock().hash
-    );
-    block.mineBlock(this.difficulty);
-
-    console.log(chalk.green("Block successfully mined!"));
-    this.chain.push(block);
-
-    this.pendingTransactions = [];
-  }
-
-  createTransaction(transaction) {
-    this.pendingTransactions.push(transaction);
-  }
-
-  getBalanceOfAddress(address) {
-    let balance = 0;
-
-    for (const block of this.chain) {
-      for (const transaction of block.transactions) {
-        if (transaction.fromAddress === address) {
-          balance -= transaction.amount;
-        }
-
-        if (transaction.toAddress === address) {
-          balance += transaction.amount;
-        }
-      }
-    }
-
-    return balance;
-  }
-
-  isChainValid() {
-    for (let i = 1; i < this.chain.length; i++) {
-      const currentBlock = this.chain[i];
-      const previousBlock = this.chain[i - 1];
-
-      if (currentBlock.hash !== currentBlock.calculateHash()) {
-        return false;
-      }
-
-      if (currentBlock.previousHash !== previousBlock.hash) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-}
-
-class Transaction {
-  constructor(fromAddress, toAddress, amount) {
-    this.fromAddress = fromAddress;
-    this.toAddress = toAddress;
-    this.amount = amount;
-    this.timestamp = new Date().toISOString();
-  }
-}
-
-async function generateKeyPair() {
+function generateKeyPair() {
   return crypto.generateKeyPairSync("rsa", {
     modulusLength: 2048,
     publicKeyEncoding: { type: "spki", format: "pem" },
@@ -123,6 +23,50 @@ async function saveKeyToFile(username, key, type) {
 
   await fs.writeFile(filePath, key, "utf-8");
   console.log(chalk.green(`Key saved to: ${filePath}`));
+}
+
+async function sendMessage(
+  senderPrivateKey,
+  recipientPublicKey,
+  recipientPrivateKey,
+  message,
+  signMessageFunction
+) {
+  const maxMessageLength = 190;
+
+  if (Buffer.from(message, "utf-8").length > maxMessageLength) {
+    throw new Error("Message is too long for RSA encryption");
+  }
+
+  const encryptedBuffer = crypto.publicEncrypt(
+    {
+      key: recipientPublicKey,
+      padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+      oaepHash: "sha256",
+    },
+    Buffer.from(message, "utf-8")
+  );
+
+  const signature = signMessageFunction
+    ? signMessageFunction(encryptedBuffer)
+    : null;
+
+  const decryptedBuffer = crypto.privateDecrypt(
+    {
+      key: recipientPrivateKey,
+      padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+      oaepHash: "sha256",
+    },
+    encryptedBuffer
+  );
+
+  const decryptedMessage = decryptedBuffer.toString("utf-8");
+
+  return {
+    encryptedMessage: encryptedBuffer.toString("base64"),
+    signature,
+    decryptedMessage,
+  };
 }
 
 async function saveTransaction(
@@ -165,8 +109,6 @@ async function saveTransaction(
   }
 }
 
-const blockchain = new Blockchain();
-
 async function main() {
   const answers = await inquirer.prompt([
     {
@@ -199,13 +141,13 @@ async function main() {
 
   console.log(chalk.yellow(`Generating keys for sender: ${senderUsername}...`));
   const { publicKey: senderPublicKey, privateKey: senderPrivateKey } =
-    await generateKeyPair();
+    generateKeyPair();
 
   console.log(
     chalk.yellow(`Generating keys for recipient: ${recipientUsername}...`)
   );
   const { publicKey: recipientPublicKey, privateKey: recipientPrivateKey } =
-    await generateKeyPair();
+    generateKeyPair();
 
   await saveKeyToFile(senderUsername, senderPrivateKey, "privateKey");
   await saveKeyToFile(recipientUsername, recipientPublicKey, "publicKey");
@@ -215,6 +157,7 @@ async function main() {
   const { encryptedMessage, signature, decryptedMessage } = await sendMessage(
     senderPrivateKey,
     recipientPublicKey,
+    recipientPrivateKey,
     message,
     signMessage ? (data) => crypto.sign(null, data, senderPrivateKey) : null
   );
@@ -230,25 +173,6 @@ async function main() {
     signature,
     decryptedMessage,
     new Date().toISOString()
-  );
-
-  console.log(chalk.yellow("Mining a block..."));
-  blockchain.createTransaction(
-    new Transaction(senderUsername, recipientUsername, 1)
-  );
-  blockchain.minePendingTransactions("miner-reward-address");
-
-  console.log(
-    chalk.green(
-      "Balance of sender:",
-      blockchain.getBalanceOfAddress(senderUsername)
-    )
-  );
-  console.log(
-    chalk.green(
-      "Balance of recipient:",
-      blockchain.getBalanceOfAddress(recipientUsername)
-    )
   );
 }
 
