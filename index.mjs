@@ -16,6 +16,7 @@ class Block {
 class Blockchain {
   constructor() {
     this.chain = [this.createGenesisBlock()];
+    this.pendingTransactions = [];
   }
 
   createGenesisBlock() {
@@ -36,6 +37,42 @@ class Blockchain {
       newBlock.data
     );
     this.chain.push(newBlock);
+  }
+
+  addTransaction(sender, recipient, amount, timestamp) {
+    const transaction = {
+      sender,
+      recipient,
+      amount,
+      timestamp,
+    };
+    this.pendingTransactions.push(transaction);
+  }
+
+  processPendingTransactions(miningRewardAddress, miningRewardAmount) {
+    const blockData = {
+      transactions: [...this.pendingTransactions],
+    };
+
+    const newBlock = new Block(
+      null,
+      null,
+      new Date().toISOString(),
+      blockData,
+      ""
+    );
+
+    this.addBlock(newBlock);
+
+    // Reward the miner for processing the transactions
+    this.addTransaction(
+      null,
+      miningRewardAddress,
+      miningRewardAmount,
+      new Date().toISOString()
+    );
+
+    this.pendingTransactions = [];
   }
 
   calculateHash(index, previousHash, timestamp, data) {
@@ -207,10 +244,30 @@ async function main() {
         message: "Enter the message to send:",
       },
       {
+        type: "input",
+        name: "miningRewardAddress",
+        message: "Enter mining reward address:",
+      },
+      {
+        type: "input",
+        name: "miningRewardAmount",
+        message: "Enter mining reward amount:",
+        validate: (input) => {
+          const amount = parseFloat(input);
+          return !isNaN(amount) && amount > 0;
+        },
+      },
+      {
         type: "confirm",
-        name: "continueProcess",
-        message: "Do you want to continue the process?",
+        name: "addAnotherBlock",
+        message: "Do you want to add another block?",
         default: false,
+      },
+      {
+        type: "confirm",
+        name: "addTransactionToBlockchain",
+        message: "Do you want to add this transaction to the blockchain?",
+        default: true,
       },
     ]);
 
@@ -218,7 +275,10 @@ async function main() {
     const recipientUsername = answers.recipient.toLowerCase();
     const signMessage = answers.signMessage;
     const message = answers.message;
-    continueProcess = answers.continueProcess;
+    const miningRewardAddress = answers.miningRewardAddress;
+    const miningRewardAmount = parseFloat(answers.miningRewardAmount);
+    const addAnotherBlock = answers.addAnotherBlock;
+    const addTransactionToBlockchain = answers.addTransactionToBlockchain;
 
     console.log(
       chalk.yellow(`Generating keys for sender: ${senderUsername}...`)
@@ -253,23 +313,29 @@ async function main() {
       signMessage ? (data) => crypto.sign(null, data, senderPrivateKey) : null
     );
 
-    // console.log(chalk.green(`Encrypted Message: ${encryptedMessage}`));
-    // console.log(chalk.green(`Signature: ${signature}`));
-    // console.log(chalk.green(`Decrypted Message: ${decryptedMessage}`));
-    // console.log(chalk.green(`Block Index: ${blockIndex}`));
-    // console.log(chalk.green(`Block Hash: ${blockHash}`));
-
-    await saveTransaction(
-      senderUsername,
-      recipientUsername,
-      encryptedMessage,
-      signature,
-      decryptedMessage,
-      new Date().toISOString(),
-      blockIndex,
-      blockHash,
-      lastBlock ? lastBlock.hash : null
+    // Mine a block with the provided mining reward address and amount
+    blockchain.processPendingTransactions(
+      miningRewardAddress,
+      miningRewardAmount
     );
+
+    if (addTransactionToBlockchain) {
+      await saveTransaction(
+        senderUsername,
+        recipientUsername,
+        encryptedMessage,
+        signature,
+        decryptedMessage,
+        new Date().toISOString(),
+        blockIndex,
+        blockHash,
+        lastBlock ? lastBlock.hash : null
+      );
+    }
+
+    if (!addAnotherBlock) {
+      continueProcess = false;
+    }
   }
 }
 
