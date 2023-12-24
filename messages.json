@@ -1,24 +1,41 @@
 [
   {
     "sender": "aibyn",
-    "recipient": "bob",
-    "encryptedMessage": "FpUXZhuB+e7s071I2TkawvbtQ2ZlHwR7tfREqfmzlr92v1QfpbryaYWp90dAfMO0KVtOVnork5B8UdxciD2+4c3eJTdPmesvUrAbxcWbHYlqEdyHxR+OXowqkXkbXnvTRKrwf0Gf8r6rXjRRphNneaD4tXwlbHfURSZECQ+yM5IyHsyXk0RhSXlob+loCq370XrjV3S+9Uujyd/vNkx6c49bMGuQc5DrMqptcUOzkNMJWL++XTsb2nVvLdV2YE61Rywc7AnzEY20C7H18DTh2/5O+u8fmBlZhPm623zmZAmigNZV2RqqGylor9CZ24+rUCEsy98LKnS4QTidTtiuxw==",
-    "signature": "c9AuXFCh82QfgHn5b36cNKlEo9/kkIqqqDYHq/0OXnrCnDRkbx/B7Fya+k7p8kQ72IqYZ3PQl2g20jdY4nIxB/HLyxKzufbnZnuTmc5QKBhJp7Xoh2Qj6NolXAeutcXhb2fD56FRtIy0P58A8egvmgaFlSL4n46FVZgEtrLOwxRJ91Kzxrw7yssYjxKwRUiSZC98T3f05DCT7y7mKbvbuMz2/XHu4JVXbFBWKKtGP26F6wrr7OFmPGbZOq0K+fmql7fpVBj/y2gkYH61wAgLBKAu/fXZW23L+4L4uLBTB/y5tIIiJZbhwgKRhrmzNJEII6FXRWPaVn3DpTsywIB9BA==",
-    "decryptedMessage": "asadadaa",
-    "timestamp": "2023-12-23T19:02:48.367Z",
+    "recipient": "gani",
+    "miningAddress": "asdfghj",
+    "amount": "4",
+    "encryptedMessage": "IVpbwhy8AjkHQ2Xz1WiyOq0EGErwPbQN7wj6ksc3ty9127hFEw72hS0tguXc/Q63HPizmwKF/397tTqsE355KT9+gfmASvWzbftn0bPjjUap7+i4WmibpxEEsnbiYIZ6EDjPTcS/D6nBND4LnOuNeCVPjwu/LZ9PQi3YHltqc/vdCoWATHGspML++mUORvy5kGyAr51a27lVTsENUA0qisQpUyESrzOiQGVtisRMa8HJIfUxj+x0OIyWaOtJTL8jBkVZTanVqlcYI4tUQ6MLKiaiGPOQE5xmWg8P99jDDnvPLsbs791yCUEJZFVAJ/dJMDdVU5/6OR/9KYz9xXZuRw==",
+    "signature": "CVRHuIsRjUrvnpZJHhmiJ/rgnUhz27KhuOKqrZ0Q+Hgte2y4VocPMZ+bTXEVRRXl01IhEzCkWci4610LSsSYzN1oirj+r6XcH5waNwIDqyq9I9/tOd2SL5nFetnmT12Wi/cqnblOCr0PWClRwcNeiK5DxdZG19MpsEOa3UP5DtgTNdVKXMlMSdcV2JG0nz3Kv7zZd8H3CeeEiivASaQPx4Ax5J1z2tEyfFEGfShCGPdTqqfAT6A2lH3si11FEPi8RfkVIXMAjnLwqPgHiz3PyczpMphxNfAMPHjXZeBR1K6meZON0M4y0CGaZDK7/3+F4PuXE1celb+ul3tu9vxMRw==",
+    "decryptedMessage": "HELLO",
+    "timestamp": "2023-12-24T19:22:26.187Z",
     "blockIndex": 1,
-    "blockHash": "b3c29a0cbeb5b67b42885dcb58334f8f836782bb024131c71f27df2893698eee",
+    "blockHash": "e8bb9e57c5d1d8ce59237013d096d1108111062ebb485cb5538d3cc54e9181e0",
     "previousBlockHash": ""
   },
   {
-    "sender": "bob",
-    "recipient": "aibyn",
-    "encryptedMessage": "GX0gYOt9J2raK4IBUOmcmX2aufN8MQ5SM2s7cDYtyyrpq1gmEHKzlp8bBnhRKR/B6mxWvk0MAYupdwjP3pEQ/PEWlGS90/LXfPGwDPySlaI48AZxmiXyaa9OKpIhOdST4wQie7FDBe2FtHCt8CkRWW84wqm6dFtwI7LfkBJ7hwO7rTF9e1KnOmZ+Uoaq8rYJKj3puG6HfvvfdxP7EOilYo4G/IhNt7iuKhHfQ418mCltay77+77hkAodbWEgx3FiZWXrQSCGlOEEyJcMzKPIccIfLU4MtZLPwzlVRJ63V+lxhOuM575ki8gkCCpM9689boCpGbCIdsGi0tp1nfpUQg==",
+    "sender": "alex",
+    "recipient": "bob",
+    "miningAddress": "nsdlkvnsvjkdsv",
+    "amount": "4",
+    "encryptedMessage": "n1UGvmDrr7pV1PWEI5E9SkIahzdgW4gUZzKigE3ORtiB0ezLEKekvm9P+W8IZ7kPMPzg5kaM4mpV4AjvQOQq4UO4MV7bE+RzjIvVjRY+rKq8bF//SyD5I+9loRdTVg6y99IUlpLqOr7x05vQWbDdqW0Z8gPP7aRj1IeW4zrbtNmktaCzwq9FItv+UsIzXLk78FD+WCjkVl9Pj80S30/LEJ9M4mJzST/f/0735CVFhxy05UkDPaDNeOvgM3edmNd+bJE4o4iPpG81w5p77zCO2tDx42ZChZLIhT7NEf3dmBrU4i3gVOROwlW9aa3rg0316Lhe8O7rbgioTkZRcDqj8Q==",
     "signature": null,
-    "decryptedMessage": "lslsl",
-    "timestamp": "2023-12-23T19:03:05.829Z",
+    "decryptedMessage": "jjdjdjdjd",
+    "timestamp": "2023-12-24T19:22:52.368Z",
+    "blockIndex": 2,
+    "blockHash": "8408efa6c1151c7188f8852201fdf5ca8d37fe21eed6b48bb49eb184c31b029a",
+    "previousBlockHash": "e8bb9e57c5d1d8ce59237013d096d1108111062ebb485cb5538d3cc54e9181e0"
+  },
+  {
+    "sender": "alex",
+    "recipient": "gani",
+    "miningAddress": "sfsavasdv",
+    "amount": "4",
+    "encryptedMessage": "cHV3LCMlRLtoJ3UznHgj8iWpRvvxmdLpekdfSMWSkeYxISI39P5/IiABAVAQRhB6sLbC6oXQu/+IDiSddcarsORTpY+Xkkd8eCJ92XEyAvB1Ici3kPAP5zPuXPqJVhBNFeMW/70jsZn/cZZyBKYyDsUup3SEfueOgcQC4g8Dc38eZWY6ghA2VqGxqEukayjQ6CgJdZVUFP54a057ztVDBN7109JP0eNBYB5WpPKPkQ6d95XNrgTPXx3BqEhBj6EDhMZUC0jn5PNwiwIVjdwazM01/2nxw9hqeBYOViTV3tbm5feBR1ib8zVI1cCW9MXEuQZAEe7ju5+CF7hf9nl4yA==",
+    "signature": "JDv3SjUjlFrv7VE3kpURG5Bf6p5va8TJBGOzfcjz5bFujThrPX9iD1HCyxtlGzISmpqRHT/DUcDllJZNPkmtXGBwFqYagBpgIo0VcyNVf+/Z2Qxah2QTqBHkQAcckuaqmLGRNKDigF5rTGfdeJgy7hwDvjG229mvzQTKxmpd8CNtaL/ivKhftvlS6ZVHJ5z0KPn198ehGgeYHyGNStU9UdOKTbkdupK38xq6gLoor/St1KZx6b0kzzssEA7/vXgRi2sG/nQJ0e0rd1ewVmgKK5X0QOYtr6DsuMjeFC5WAu/YMJf7Zsa/N+jbdgrgsbQTv+c1+nk2LfPlZRNP/xJxVg==",
+    "decryptedMessage": "cbasjcsacsa",
+    "timestamp": "2023-12-24T19:23:12.393Z",
     "blockIndex": 3,
-    "blockHash": "c5b87ef1c8eb1089387e9de332c0e232f2ebc9238facb6115fe6851595e1bc77",
-    "previousBlockHash": "9dad02fee4dcbff52bd2469c15fbe991902013b963e45a814a9f4a55d1db2af4"
+    "blockHash": "f426febed8f013e2044d37b0112f03afb43b3002475cf51331965b58903aedf0",
+    "previousBlockHash": "8408efa6c1151c7188f8852201fdf5ca8d37fe21eed6b48bb49eb184c31b029a"
   }
 ]

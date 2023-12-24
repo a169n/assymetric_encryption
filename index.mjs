@@ -16,7 +16,6 @@ class Block {
 class Blockchain {
   constructor() {
     this.chain = [this.createGenesisBlock()];
-    this.pendingTransactions = [];
   }
 
   createGenesisBlock() {
@@ -37,42 +36,6 @@ class Blockchain {
       newBlock.data
     );
     this.chain.push(newBlock);
-  }
-
-  addTransaction(sender, recipient, amount, timestamp) {
-    const transaction = {
-      sender,
-      recipient,
-      amount,
-      timestamp,
-    };
-    this.pendingTransactions.push(transaction);
-  }
-
-  processPendingTransactions(miningRewardAddress, miningRewardAmount) {
-    const blockData = {
-      transactions: [...this.pendingTransactions],
-    };
-
-    const newBlock = new Block(
-      null,
-      null,
-      new Date().toISOString(),
-      blockData,
-      ""
-    );
-
-    this.addBlock(newBlock);
-
-    // Reward the miner for processing the transactions
-    this.addTransaction(
-      null,
-      miningRewardAddress,
-      miningRewardAmount,
-      new Date().toISOString()
-    );
-
-    this.pendingTransactions = [];
   }
 
   calculateHash(index, previousHash, timestamp, data) {
@@ -111,7 +74,9 @@ async function sendMessage(
   recipientPrivateKey,
   message,
   blockchain,
-  signMessageFunction
+  signMessageFunction,
+  miningAddress,
+  amount
 ) {
   const maxMessageLength = 190;
 
@@ -146,6 +111,8 @@ async function sendMessage(
   const newBlockData = {
     senderPrivateKey,
     recipientPublicKey,
+    miningAddress,
+    amount,
     encryptedMessage: encryptedBuffer.toString("base64"),
     signature: signature ? signature.toString("base64") : null,
     decryptedMessage,
@@ -178,11 +145,15 @@ async function saveTransaction(
   timestamp,
   blockIndex,
   blockHash,
-  previousBlockHash
+  previousBlockHash,
+  miningAddress,
+  amount
 ) {
   const transaction = {
     sender,
     recipient,
+    miningAddress,
+    amount,
     encryptedMessage,
     signature: signature ? signature.toString("base64") : null,
     decryptedMessage,
@@ -245,29 +216,25 @@ async function main() {
       },
       {
         type: "input",
-        name: "miningRewardAddress",
-        message: "Enter mining reward address:",
+        name: "miningAddress",
+        message: "Enter mining address:",
       },
       {
         type: "input",
-        name: "miningRewardAmount",
-        message: "Enter mining reward amount:",
-        validate: (input) => {
-          const amount = parseFloat(input);
-          return !isNaN(amount) && amount > 0;
+        name: "amount",
+        message: "Enter amount:",
+        validate: (value) => {
+          const isValid = /^\d+(\.\d{1,2})?$/.test(value);
+          return (
+            isValid || "Please enter a valid amount (e.g., 100 or 100.50)."
+          );
         },
       },
       {
         type: "confirm",
-        name: "addAnotherBlock",
-        message: "Do you want to add another block?",
+        name: "continueProcess",
+        message: "Do you want to continue the process?",
         default: false,
-      },
-      {
-        type: "confirm",
-        name: "addTransactionToBlockchain",
-        message: "Do you want to add this transaction to the blockchain?",
-        default: true,
       },
     ]);
 
@@ -275,10 +242,9 @@ async function main() {
     const recipientUsername = answers.recipient.toLowerCase();
     const signMessage = answers.signMessage;
     const message = answers.message;
-    const miningRewardAddress = answers.miningRewardAddress;
-    const miningRewardAmount = parseFloat(answers.miningRewardAmount);
-    const addAnotherBlock = answers.addAnotherBlock;
-    const addTransactionToBlockchain = answers.addTransactionToBlockchain;
+    const miningAddress = answers.miningAddress;
+    const amount = answers.amount;
+    continueProcess = answers.continueProcess;
 
     console.log(
       chalk.yellow(`Generating keys for sender: ${senderUsername}...`)
@@ -293,6 +259,9 @@ async function main() {
       generateKeyPair();
 
     await saveKeyToFile(senderUsername, senderPrivateKey, "privateKey");
+    await saveKeyToFile(senderUsername, senderPublicKey, "publicKey");
+
+    await saveKeyToFile(recipientUsername, recipientPrivateKey, "privateKey");
     await saveKeyToFile(recipientUsername, recipientPublicKey, "publicKey");
 
     console.log(chalk.yellow("Sending and saving the message..."));
@@ -310,32 +279,24 @@ async function main() {
       recipientPrivateKey,
       message,
       blockchain,
-      signMessage ? (data) => crypto.sign(null, data, senderPrivateKey) : null
+      signMessage ? (data) => crypto.sign(null, data, senderPrivateKey) : null,
+      miningAddress,
+      amount
     );
 
-    // Mine a block with the provided mining reward address and amount
-    blockchain.processPendingTransactions(
-      miningRewardAddress,
-      miningRewardAmount
+    await saveTransaction(
+      senderUsername,
+      recipientUsername,
+      encryptedMessage,
+      signature,
+      decryptedMessage,
+      new Date().toISOString(),
+      blockIndex,
+      blockHash,
+      lastBlock ? lastBlock.hash : null,
+      miningAddress,
+      amount
     );
-
-    if (addTransactionToBlockchain) {
-      await saveTransaction(
-        senderUsername,
-        recipientUsername,
-        encryptedMessage,
-        signature,
-        decryptedMessage,
-        new Date().toISOString(),
-        blockIndex,
-        blockHash,
-        lastBlock ? lastBlock.hash : null
-      );
-    }
-
-    if (!addAnotherBlock) {
-      continueProcess = false;
-    }
   }
 }
 
