@@ -20,7 +20,7 @@ Move into the project directory to run the application.
 
 Install the required Node.js dependencies for the project.
 
-npm i inquirer chalk crypto fs
+`npm i inquirer chalk crypto fs`
 
 4. **Run the application:**
 
@@ -28,7 +28,7 @@ Follow the interactive prompts to send messages and save transactions.
 
 This command executes the main script (`index.mjs`) and starts the interactive messaging application.
 
-node index.mjs
+`node index.mjs`
 
 ## Project Structure
 
